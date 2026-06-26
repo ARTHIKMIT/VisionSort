@@ -1,68 +1,104 @@
-# VisionSort
+<div align="center">
+  <h1>♻️ VisionSort</h1>
+  <p><strong>AI-Powered Waste Segregation System</strong></p>
+  
+  [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+  [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-00a393.svg)](https://fastapi.tiangolo.com/)
+  [![Ultralytics YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-orange.svg)](https://github.com/ultralytics/ultralytics)
+  [![MongoDB](https://img.shields.io/badge/MongoDB-Motor-47A248.svg)](https://www.mongodb.com/)
+</div>
 
-AI-Powered Waste Segregation System, designed to classify waste items on a simulated conveyor belt to reduce contamination rates in material recycling centers.
+<hr/>
 
-## Architecture
+## 📖 About The Project
 
-This project is built with the following stack:
-- **AI/ML**: Ultralytics YOLOv8 (classification mode) backed by PyTorch. 
-  - *Why Classification?* We assume a sorting line where a camera captures a single centered item cropped out of a stream. This makes the pipeline faster and perfectly aligns with datasets like TrashNet.
-- **Backend**: FastAPI with async Motor (MongoDB driver) handling API requests.
-- **Frontend**: Vanilla HTML/CSS/JS with a responsive CSS grid, adhering to an industrial dark-mode aesthetic.
-- **Database**: MongoDB for persistent logging of sorting events. In-memory fallback is provided if MongoDB is unavailable.
+Material recycling centers suffer from incredibly high contamination rates because manual sorting fails to segregate plastics, metals, paper, glass, and biological waste rapidly and accurately. 
 
-## Project Structure
-```
+**VisionSort** is a full-stack, end-to-end prototype designed to solve this problem. It simulates a conveyor belt camera on a sorting line, dynamically classifying waste items in real-time to drastically reduce contamination and improve recycling efficiency.
+
+### 🌟 Key Features
+- **Real-Time AI Inference:** Utilizes a custom fine-tuned YOLOv8 classification model to rapidly identify trash categories.
+- **Factory Dashboard:** A sleek, industrial-themed dark-mode UI (built without frameworks) featuring dynamic live feeds and analytics.
+- **Contamination Alerts:** Automatically triggers flashing visual fault warnings if an item is classified with a low confidence score (< 60%).
+- **Automated Data Pipeline:** Built-in Python script to automatically download, extract, and split the TrashNet dataset for seamless model retraining.
+- **Resilient Backend:** Built with FastAPI and Async Motor. If a MongoDB daemon isn't running locally, the API silently falls back to an in-memory database to keep the demo alive.
+
+---
+
+## 🛠 Tech Stack
+
+- **Machine Learning**: `PyTorch`, `Ultralytics (YOLOv8-cls)`
+- **Backend**: `Python`, `FastAPI`, `Uvicorn`
+- **Database**: `MongoDB`, `Motor` (Async)
+- **Frontend**: `Vanilla HTML5`, `CSS Grid`, `JavaScript`, `Chart.js`
+
+---
+
+## 📂 Project Structure
+
+```text
 VISIONSORT/
-├── data/                  # Contains raw and processed TrashNet dataset
-├── notebooks/             # Jupyter notebook for YOLO training exploration
-├── ml/                    # Training and inference scripts
-├── backend/               # FastAPI backend and DB modules
-├── frontend/              # HTML/CSS/JS dashboard files
-├── requirements.txt       # Python dependencies
-├── .env                   # Configuration file
-└── README.md              # This file
+├── data/                  # Auto-generated: Stores raw & processed TrashNet datasets
+├── ml/                    
+│   ├── train.py           # Auto-downloads dataset and fine-tunes YOLOv8
+│   ├── infer.py           # ML inference engine loading the trained weights
+│   └── classes.yaml       # Defines the 6 waste classes
+├── backend/               
+│   ├── main.py            # FastAPI application entrypoint
+│   ├── routes.py          # API Endpoints (/predict, /stats, /recent)
+│   ├── db.py              # MongoDB async connection & in-memory fallback
+│   └── schemas.py         # Pydantic validation models
+├── frontend/              
+│   ├── index.html         # Dashboard Layout
+│   ├── style.css          # Industrial dark-mode styling
+│   └── script.js          # API consumption and Chart.js logic
+├── requirements.txt       # Pinned dependency file
+└── .env                   # Configuration variables
 ```
 
-## Setup & Running the Application
+---
+
+## 🚀 Getting Started
+
+Follow these steps to run the project locally.
 
 ### 1. Prerequisites
-- Python 3.9+
-- MongoDB running locally (default `mongodb://localhost:27017`). If it fails, the app uses in-memory mode.
-- Optional: CUDA-enabled GPU (RTX 3050 supported for training with small batch sizes).
+Ensure you have `Python 3.9+` installed. *(Optional: A local MongoDB instance running on port 27017 for data persistence).*
 
-### 2. Environment Setup
+### 2. Installation
+Clone the repository and set up a virtual environment:
+
 ```bash
-cd VISIONSORT
+git clone https://github.com/ARTHIKMIT/VisionSort.git
+cd VisionSort
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 3. Data Prep & Model Training (Optional)
-If you just want to run the app, the inference script falls back to a pretrained nano model if `best.pt` is not found. To train a custom model on the TrashNet dataset:
+### 3. Model Training (Optional)
+If you wish to retrain the model from scratch on the TrashNet dataset, simply run the training script. It handles dataset downloading and splitting automatically:
 ```bash
 python ml/train.py
 ```
-This script will:
-1. Download the dataset from Google Drive.
-2. Extract and split it into Train/Val/Test directories.
-3. Train YOLOv8-cls for 10 epochs.
-4. Output `best.pt` to the `ml/` directory.
+*(If skipped, the backend will safely fallback to a lightweight, pretrained `yolov8n-cls` generic model for demonstration purposes).*
 
 ### 4. Start the Application
-Start the FastAPI server:
+Run the backend server as a Python module:
 ```bash
-python backend/main.py
+python -m backend.main
 ```
-The server will start on `http://localhost:8000`.
+Navigate to **http://localhost:8000** in your browser to interact with the VisionSort Control Panel.
 
-### 5. Open the Dashboard
-Navigate to [http://localhost:8000](http://localhost:8000) in your web browser. 
+---
 
-You can interact with the live "camera feed" panel by clicking it and uploading images of trash to simulate the conveyor belt camera.
+## 🧠 AI Architecture Decisions
 
-### Features
-- **Real-time Inference**: Drag and drop images to see instant classification results.
-- **Fault Detection**: The UI flashes red if a prediction confidence is < 60%.
-- **Live Feed & Stats**: A historical feed of classifications and a live Chart.js summary.
+**Why YOLOv8 Classification instead of Object Detection?**
+In an industrial sorting line setting, cameras are typically positioned over segments of a conveyor belt, capturing items isolated by optical sorters or physical separators. Because the stream processes one item per frame (simulated by the TrashNet dataset), an Image Classification head is significantly lighter, trains orders of magnitude faster, and consumes heavily reduced VRAM compared to a bounding-box Object Detection model—achieving identical segregation outcomes.
+
+---
+
+<div align="center">
+  <i>Developed for academic research and demonstration purposes.</i>
+</div>
