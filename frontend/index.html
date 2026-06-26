@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionSort Control Panel</title>
+    <!-- Google Fonts for Industrial Look -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="fault-banner" class="hidden">
+        ⚠️ CONTAMINATION ALERT: LOW CONFIDENCE PREDICTION DETECTED ⚠️
+    </div>
+
+    <header>
+        <div class="logo">
+            <h1>VISION<span>SORT</span></h1>
+            <p>AI-Powered Waste Segregation System</p>
+        </div>
+        <div class="system-status">
+            <span class="status-indicator online"></span>
+            SYSTEM ONLINE
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        <!-- Panel 1: Camera Feed Simulator -->
+        <section class="panel camera-panel">
+            <h2><span class="icon">📷</span> CONVEYOR BELT CAMERA (SIMULATION)</h2>
+            <div class="camera-feed" id="drop-zone">
+                <img id="preview-image" src="" alt="Camera Feed" style="display: none;">
+                <div class="upload-prompt" id="upload-prompt">
+                    <p>Click or Drop Image Here</p>
+                    <p class="subtext">Simulate passing item on conveyor</p>
+                </div>
+                <input type="file" id="image-upload" accept="image/*" hidden>
+            </div>
+            
+            <div class="current-prediction">
+                <h3>LATEST RESULT</h3>
+                <div class="result-display">
+                    <div class="class-name" id="predicted-class">WAITING...</div>
+                    <div class="confidence-container">
+                        <div class="confidence-bar" id="confidence-bar"></div>
+                    </div>
+                    <div class="confidence-text" id="confidence-text">--%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Panel 2: Live Stats & Analytics -->
+        <section class="panel stats-panel">
+            <h2><span class="icon">📊</span> CLASSIFICATION STATS</h2>
+            <div class="stats-overview">
+                <div class="stat-box">
+                    <div class="stat-label">TOTAL ITEMS</div>
+                    <div class="stat-value" id="total-items">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">AVG CONFIDENCE</div>
+                    <div class="stat-value" id="avg-confidence">0%</div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="statsChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Panel 3: Recent Activity Feed -->
+        <section class="panel feed-panel">
+            <h2><span class="icon">📋</span> LIVE FEED</h2>
+            <div class="feed-container" id="live-feed">
+                <!-- Feed items will be injected here via JS -->
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

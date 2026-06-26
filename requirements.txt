@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+motor
+python-multipart
+python-dotenv
+ultralytics
+torch
+torchvision
+pillow
+matplotlib
+seaborn
+pandas
+scikit-learn
+requests
+gdown
