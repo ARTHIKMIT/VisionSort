@@ -10,5 +10,6 @@ venv/
 env/
 runs/
 *.pt
+!ml/best.pt
 .ipynb_checkpoints/
 .DS_Store
