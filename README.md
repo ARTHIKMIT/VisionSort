@@ -1,6 +1,7 @@
 <div align="center">
   <h1>♻️ VisionSort</h1>
   <p><strong>AI-Powered Waste Segregation System</strong></p>
+  <p>🔴 <strong><a href="https://visionsort.onrender.com">View Live Demo</a></strong> 🔴</p>
   
   [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
   [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-00a393.svg)](https://fastapi.tiangolo.com/)
